@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  branch-enforcer:
+    build:
+      context: ../..
+      dockerfile: infrastructure/docker/Dockerfile
+    container_name: branch-enforcer
+    volumes:
+      - ../../src:/app/src
+      - ../../tests:/app/tests
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - APP_ENV=development
+    command: rules
+
+  test-runner:
+    build:
+      context: ../..
+      dockerfile: infrastructure/docker/Dockerfile
+    container_name: branch-enforcer-tests
+    volumes:
+      - ../../src:/app/src
+      - ../../tests:/app/tests
+    command: ["python", "-m", "pytest", "tests/", "-v", "--tb=short"]
+
+  monitoring:
+    image: prom/prometheus:latest
+    container_name: branch-enforcer-monitoring
+    ports:
+      - "9090:9090"
+    volumes:
+      - ../../monitoring/dashboards/prometheus.yml:/etc/prometheus/prometheus.yml
+    profiles:
+      - monitoring

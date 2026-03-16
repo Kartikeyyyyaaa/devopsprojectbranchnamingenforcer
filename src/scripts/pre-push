@@ -1,0 +1,43 @@
+#!/usr/bin/env python3
+"""
+Git pre-push hook: validates branch name before any push.
+Install: copy this file to .git/hooks/pre-push  (chmod +x)
+"""
+import sys
+import os
+
+# Allow the hook to find the enforcer regardless of CWD
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+ROOT = os.path.abspath(os.path.join(SCRIPT_DIR, "..", ".."))
+sys.path.insert(0, os.path.join(ROOT, "src", "main", "python"))
+
+from branch_enforcer import BranchEnforcer
+
+def main():
+    enforcer = BranchEnforcer()
+    branch = enforcer.get_current_branch()
+
+    if branch is None:
+        print("⚠️  [pre-push] Could not determine branch name. Skipping check.")
+        sys.exit(0)
+
+    result = enforcer.validate(branch)
+
+    if result["valid"]:
+        print(f"✅  [pre-push] Branch '{branch}' follows naming conventions.")
+        sys.exit(0)
+    else:
+        print(f"\n{'='*60}")
+        print(f"  🚫  PUSH BLOCKED – Branch name violation")
+        print(f"{'='*60}")
+        print(f"  Branch   : {branch}")
+        print(f"  Reason   : Does not match any allowed pattern")
+        if result.get("suggestion"):
+            print(f"  Suggest  : {result['suggestion']}")
+        print(f"\n  Run  'python src/main/python/branch_enforcer.py rules'")
+        print(f"  to see all allowed naming conventions.")
+        print(f"{'='*60}\n")
+        sys.exit(1)
+
+if __name__ == "__main__":
+    main()

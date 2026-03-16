@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: branch-enforcer-config
+data:
+  config.json: |
+    {
+      "project": "Branch Naming Convention Enforcer",
+      "version": "1.0.0",
+      "enforce_on_push": true,
+      "block_invalid_branches": true,
+      "allowed_prefixes": ["feature","fix","hotfix","release","docs","refactor","test","chore"],
+      "protected_branches": ["main","master","develop"]
+    }

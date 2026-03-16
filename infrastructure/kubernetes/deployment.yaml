@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: branch-enforcer
+  labels:
+    app: branch-enforcer
+    version: "1.0.0"
+    student: "23FE10CSE00736"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: branch-enforcer
+  template:
+    metadata:
+      labels:
+        app: branch-enforcer
+    spec:
+      containers:
+        - name: branch-enforcer
+          image: branch-enforcer:latest
+          imagePullPolicy: IfNotPresent
+          command: ["python", "src/main/python/branch_enforcer.py"]
+          args: ["rules"]
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "100m"
+            limits:
+              memory: "128Mi"
+              cpu: "250m"
+          volumeMounts:
+            - name: config-volume
+              mountPath: /app/src/config
+      volumes:
+        - name: config-volume
+          configMap:
+            name: branch-enforcer-config

@@ -1,0 +1,33 @@
+{
+  "project": "Branch Naming Convention Enforcer",
+  "version": "1.0.0",
+  "author": "Kartikeya Aryan Mishra",
+  "reg_no": "23FE10CSE00736",
+
+  "enforce_on_push": true,
+  "block_invalid_branches": true,
+  "notify_on_violation": true,
+
+  "custom_patterns": {},
+
+  "allowed_prefixes": [
+    "feature",
+    "fix",
+    "hotfix",
+    "release",
+    "docs",
+    "refactor",
+    "test",
+    "chore"
+  ],
+
+  "protected_branches": ["main", "master", "develop"],
+
+  "rules": {
+    "max_length": 55,
+    "min_length": 5,
+    "allow_uppercase": false,
+    "allow_underscores": false,
+    "allow_spaces": false
+  }
+}
